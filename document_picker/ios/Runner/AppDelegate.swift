@@ -19,13 +19,6 @@ import Flutter
       }
     }
     
-//    methodChannel.setMethodCallHandler {(call: FlutterMethodCall, result: @escaping FlutterResult) -> Void in
-//      if (call.method == "start") {
-//        let controller = DocumentBrowserViewController(result: result)
-//        rootViewController.present(controller, animated: true, completion: nil)
-//      }
-//    }
-    
     GeneratedPluginRegistrant.register(with: self)
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
