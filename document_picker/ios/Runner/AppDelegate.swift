@@ -15,7 +15,7 @@ import Flutter
     methodChannel.setMethodCallHandler {(call: FlutterMethodCall, result: @escaping FlutterResult) -> Void in
       if (call.method == "start") {
         let controller = DocumentPickerViewController(result: result)
-        rootViewController.present(controller, animated: false, completion: nil)
+        rootViewController.present(controller, animated: true, completion: nil)
       }
     }
     

@@ -12,7 +12,7 @@ class DocumentPickerViewController: UIDocumentPickerViewController {
   var result: FlutterResult?
   
   convenience init(result: @escaping FlutterResult) {
-    self.init(documentTypes: ["public.item"], in: .open)
+    self.init(documentTypes: ["public.image"], in: .open) //["public.item"]
     self.result = result
   }
   
@@ -27,39 +27,37 @@ class DocumentPickerViewController: UIDocumentPickerViewController {
     fatalError("init(coder:) has not been implemented")
   }
   
-  func dataToBase64String(data: Data?) -> String? {
-    if let data = data,
-      let image = UIImage(data: data),
-      let pngData = image.pngData() {
-      return pngData.base64EncodedString()
-    }
+  func data(fromURL url: URL?) -> String {
+    _ = url?.startAccessingSecurityScopedResource()
+    var dataString = ""
     
-    return nil
-  }
-  
-  func loadData(fromURL url: URL?) {
-    if let _ = url?.startAccessingSecurityScopedResource(),
-      let url = url,
-      let data = try? Data(contentsOf: url) {
-      result?(dataToBase64String(data: data))
-      url.stopAccessingSecurityScopedResource()
-      return
+    if let url = url, let data = try? Data(contentsOf: url) {
+      dataString = url.pathExtension.base64EncodedString(fromData: data)
     }
     
     url?.stopAccessingSecurityScopedResource()
-    result?(nil)
+    return dataString
+  }
+  
+  func data(fromURLs urls: [URL]) {
+    result?(urls.map () { data(fromURL: $0) })
   }
 }
 
+extension String {
+  func base64EncodedString(fromData data: Data) -> String {
+    if self.uppercased() == "HEIC" || self.uppercased() == "TIFF" {
+      let image = UIImage(data: data)
+      return image?.pngData()?.base64EncodedString() ?? ""
+    } else {
+      return data.base64EncodedString()
+    }
+  }
+}
 
 extension DocumentPickerViewController: UIDocumentPickerDelegate {
-  func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentAt url: URL) {
-    loadData(fromURL: url)
-    controller.dismiss(animated: false, completion: nil)
-  }
-  
   func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
-    loadData(fromURL: urls[0])
+    data(fromURLs: urls)
     controller.dismiss(animated: false, completion: nil)
   }
 }
