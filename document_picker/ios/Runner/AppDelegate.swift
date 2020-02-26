@@ -12,9 +12,16 @@ import Flutter
     let rootViewController = window?.rootViewController as! FlutterViewController
     let methodChannel = FlutterMethodChannel(name: channelName, binaryMessenger: rootViewController.binaryMessenger)
     
+//    methodChannel.setMethodCallHandler {(call: FlutterMethodCall, result: @escaping FlutterResult) -> Void in
+//      if (call.method == "start") {
+//        let controller = DocumentPickerViewController(result: result)
+//        rootViewController.present(controller, animated: true, completion: nil)
+//      }
+//    }
+    
     methodChannel.setMethodCallHandler {(call: FlutterMethodCall, result: @escaping FlutterResult) -> Void in
       if (call.method == "start") {
-        let controller = DocumentPickerViewController(result: result)
+        let controller = DocumentBrowserViewController(result: result)
         rootViewController.present(controller, animated: true, completion: nil)
       }
     }
